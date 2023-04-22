@@ -33,15 +33,21 @@ public class CalculatorV3 {
         String operation = workExpression.get(1);
         workExpression.remove(1);
 
-        boolean romeNumber = whatIsNumber(workExpression);
+        // 1 - roman number, 0 - arabic number, 3 - error разные системы счисления
+        int romeNumber = whatIsNumber(workExpression);
+
+        if (romeNumber == 3) {
+            System.out.println();
+            return;
+        }
 
         String number1 = workExpression.get(0);
         String number2 = workExpression.get(1);
         Integer[] numbers = new Integer[2];
 
-        if (romeNumber){
+        if (romeNumber == 1){
             numbers = translateRomeArabicNumber(number1, number2);
-        } else {
+        } else if(romeNumber == 0){
             numbers[0] = Integer.parseInt(number1);
             numbers[1] = Integer.parseInt(number2);
 
@@ -55,10 +61,10 @@ public class CalculatorV3 {
         }
 
         String resultRome = "";
-        if(romeNumber && result > 0){
+        if(romeNumber == 1 && result > 0){
             resultRome = arabicToRoman(result);
-            System.out.println("Result Rome: " + resultRome);
-        } else if (romeNumber && result < 0) {
+            System.out.println("Result Roman: " + resultRome);
+        } else if (romeNumber == 1 && result < 0) {
             try {
                 throw new ArithmeticException();
             } catch (ArithmeticException e) {
@@ -164,7 +170,7 @@ public class CalculatorV3 {
         return workExpressionArray;
     }
 
-    private static boolean whatIsNumber(ArrayList<String> workExpression) {
+    private static int whatIsNumber(ArrayList<String> workExpression) {
         boolean isArabicNumber = false;
         boolean isRomeNumber = false;
 
@@ -185,13 +191,14 @@ public class CalculatorV3 {
                 throw new ArithmeticException();
             } catch (ArithmeticException e){
                 System.out.println("throws Exception //т.к. используются одновременно разные системы счисления");
+                return 3;
             }
         }
 
         if(isRomeNumber){
-            return true;
+            return 1;
         }
-        return false;
+        return 0;
     }
 
     private static Integer[] translateRomeArabicNumber(String number1, String number2){
